@@ -170,8 +170,14 @@ img {
 }
 
 .project-card {
-  animation: fadeInUp 0.8s var(--ease) forwards;
   opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.project-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .project-card--featured {
@@ -198,13 +204,6 @@ img {
   margin-right: 6vw;
 }
 
-.project-card:nth-child(1) { animation-delay: 0.05s; }
-.project-card:nth-child(2) { animation-delay: 0.1s; }
-.project-card:nth-child(3) { animation-delay: 0.15s; }
-.project-card:nth-child(4) { animation-delay: 0.2s; }
-.project-card:nth-child(5) { animation-delay: 0.25s; }
-.project-card:nth-child(6) { animation-delay: 0.3s; }
-
 .project-card.hidden {
   display: none;
 }
@@ -220,6 +219,9 @@ img {
   max-height: 70vh;
   aspect-ratio: 4 / 5;
   background: var(--bg-hover);
+  transform: translate3d(0, var(--parallax-y, 0), 0);
+  transition: transform 0.2s linear;
+  will-change: transform;
 }
 
 .project-card--featured .project-image {
@@ -560,17 +562,6 @@ img {
 }
 
 /* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes imageDrift {
   from {
     transform: scale(1.01) translate3d(-0.5%, 0, 0);
@@ -641,12 +632,15 @@ img {
     scroll-behavior: auto;
   }
   .project-card {
-    animation: none;
     opacity: 1;
+    transform: none;
+    transition: none;
   }
+  .project-image,
   .project-image img,
   .main-nav a::after,
   .social-links a::after {
+    transform: none;
     animation: none;
     transition: none;
   }
