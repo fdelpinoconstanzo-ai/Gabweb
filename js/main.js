@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       projectCards.forEach(card => {
         const categories = card.dataset.category || '';
-        if (filter === 'all' || categories.includes(filter)) {
+        if (filter === 'all' || categories.split(/\s+/).includes(filter)) {
           card.classList.remove('hidden');
         } else {
           card.classList.add('hidden');
