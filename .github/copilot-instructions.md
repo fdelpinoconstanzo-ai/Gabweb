@@ -2,11 +2,12 @@
 
 ## Repository overview
 
-This is a small, dependency-free local web application for browsing and
-searching conversations saved by GitHub Copilot CLI. The UI is Spanish. The
-backend is Python standard library code; the frontend is plain HTML, CSS, and
-JavaScript served without a bundler. The target runtime is Python 3.10 or
-newer (validated with Python 3.14.5).
+This is a small, dependency-free photography portfolio plus a local web
+application for browsing and searching conversations saved by GitHub Copilot
+CLI. Both UIs are Spanish. The portfolio is plain HTML/CSS/JavaScript suitable
+for GitHub Pages. The conversation browser uses a Python standard-library
+backend and a separate vanilla frontend. The target runtime for that tool is
+Python 3.10 or newer (validated with Python 3.14.5).
 
 The application reads `~/.copilot/session-store.db` as SQLite in **read-only**
 mode. That private database exists on a user's machine but normally does not
@@ -17,7 +18,8 @@ do not require Copilot data or network access.
 
 There are no third-party dependencies, package manifests, generated files, or
 bootstrap steps. Do not run `pip install`, `npm install`, or npm build commands.
-Node is not part of the toolchain and the frontend is served as source files.
+Node is not part of the toolchain and both frontends are served as source
+files.
 
 Always validate changes from the repository root in this order:
 
@@ -57,7 +59,12 @@ the local network and should be used only when explicitly requested.
 
 ## Architecture and layout
 
-- `app.py` is the complete backend and entry point.
+- `index.html`, `about.html`, `contact.html`, and `project.html` are the
+  portfolio pages deployed directly as static files.
+- `css/style.css` contains all portfolio styles; `js/main.js` contains its
+  navigation and filtering behavior. Keep selectors synchronized with all
+  portfolio pages.
+- `app.py` is the complete conversation-browser backend and entry point.
   - `ConversationStore` opens SQLite with URI `mode=ro`, escapes user search
     wildcards, uses parameterized SQL, and maps rows to dictionaries.
   - The expected database has `sessions` and `turns` tables. Session fields
@@ -70,8 +77,8 @@ the local network and should be used only when explicitly requested.
     read-only database invariant.
   - `create_server()` is the test seam; `main()` parses `--host`, `--port`, and
     `--db` and starts `ThreadingHTTPServer`.
-- `static/index.html` contains the responsive Spanish UI and reusable list/turn
-  templates.
+- `static/index.html` contains the responsive Spanish conversation-browser UI
+  and reusable list/turn templates.
 - `static/app.js` fetches both API endpoints, debounces search, renders session
   details, and inserts all database content with `textContent`. Never replace
   this with unescaped `innerHTML`, because conversation text is untrusted.
@@ -85,14 +92,16 @@ the local network and should be used only when explicitly requested.
 - `.gitignore` excludes Python bytecode and `__pycache__`.
 
 The repository has no `CONTRIBUTING.md`, dependency file, build configuration,
-or workflow under `.github/workflows/`. Root source files are `app.py`,
-`README.md`, and `.gitignore`; implementation subdirectories are `static/` and
-`tests/`.
+or workflow under `.github/workflows/`. Root source files include the four
+portfolio HTML pages, `app.py`, `README.md`, and `.gitignore`; implementation
+subdirectories are `css/`, `js/`, `static/`, and `tests/`.
 
 Keep changes dependency-free unless a requirement truly cannot be met with the
 standard library. Preserve Spanish user-visible copy and test API changes at
-both the store and HTTP layers. For frontend-only changes, run the full suite
-and manually inspect the page with a compatible local database when available.
+both the store and HTTP layers. For portfolio changes, manually open the root
+HTML pages and check navigation and filtering at desktop and mobile widths. For
+conversation frontend changes, run the full suite and manually inspect the page
+with a compatible local database when available.
 
 Trust these instructions first. Search the repository only when the requested
 work is not covered here or when these instructions are demonstrably outdated.
