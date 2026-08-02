@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gab — Fotógrafo & Director</title>
+  <meta name="description" content="Gab — Fotógrafo y director. Portafolio de fotografía y dirección." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="index.html" class="logo">Gab</a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="index.html" class="active">Photographers</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Fotógrafo & Director</h1>
+      <p class="hero-subtitle">Trabajo comercial, editorial y personal.</p>
+    </section>
+
+    <section class="filters" aria-label="Filtros">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="photography">Photography</button>
+      <button class="filter-btn" data-filter="direction">Direction</button>
+      <button class="filter-btn" data-filter="commercial">Commercial</button>
+      <button class="filter-btn" data-filter="editorial">Editorial</button>
+    </section>
+
+    <section class="projects-grid" aria-label="Proyectos">
+      <article class="project-card" data-category="photography editorial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=85" alt="Estímulo Natural" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>Estímulo Natural</h2>
+            <span>Photography</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="project-card" data-category="direction commercial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=85" alt="Luz del Oeste" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>Luz del Oeste</h2>
+            <span>Direction</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="project-card" data-category="photography commercial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1200&q=85" alt="Retratos en Silencio" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>Retratos en Silencio</h2>
+            <span>Photography</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="project-card" data-category="direction editorial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&q=85" alt="El Horizonte" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>El Horizonte</h2>
+            <span>Direction</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="project-card" data-category="photography editorial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&q=85" alt="Líneas" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>Líneas</h2>
+            <span>Photography</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="project-card" data-category="direction commercial">
+        <a href="project.html">
+          <figure class="project-image">
+            <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&q=85" alt="Movimiento" loading="lazy" />
+          </figure>
+          <div class="project-info">
+            <h2>Movimiento</h2>
+            <span>Direction</span>
+          </div>
+        </a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-left">
+      <p>&copy; <span id="year"></span> Gab</p>
+      <p class="footer-tagline">Fotógrafo & Director</p>
+    </div>
+    <div class="social-links">
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <a href="#" aria-label="Vimeo">Vimeo</a>
+      <a href="mailto:hola@gab.com">Email</a>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
