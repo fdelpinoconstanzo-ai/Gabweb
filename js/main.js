@@ -31,6 +31,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // Project filters
   const filterBtns = document.querySelectorAll('.filter-btn');
   const projectCards = document.querySelectorAll('.project-card');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion || !('IntersectionObserver' in window)) {
+    projectCards.forEach(card => card.classList.add('is-visible'));
+  } else {
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    projectCards.forEach(card => revealObserver.observe(card));
+
+    let parallaxFrame = null;
+    const updateParallax = () => {
+      projectCards.forEach(card => {
+        if (card.classList.contains('hidden')) return;
+        const image = card.querySelector('.project-image');
+        const rect = card.getBoundingClientRect();
+        if (!image || rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const distance = window.innerHeight / 2 - (rect.top + rect.height / 2);
+        const offset = Math.max(-14, Math.min(14, distance * 0.035));
+        image.style.setProperty('--parallax-y', `${offset}px`);
+      });
+      parallaxFrame = null;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!parallaxFrame) {
+        parallaxFrame = window.requestAnimationFrame(updateParallax);
+      }
+    }, { passive: true });
+    updateParallax();
+  }
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
