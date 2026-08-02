@@ -3,6 +3,7 @@ import argparse
 import json
 import mimetypes
 import sqlite3
+from contextlib import closing
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -19,7 +20,7 @@ class ConversationStore:
 
     def _connect(self):
         if not self.db_path.is_file():
-            raise FileNotFoundError(f"No se encontro la base de Copilot: {self.db_path}")
+            raise FileNotFoundError("No se encontró la base de datos de Copilot.")
         uri = f"file:{quote(self.db_path.as_posix(), safe='/')}?mode=ro"
         connection = sqlite3.connect(uri, uri=True)
         connection.row_factory = sqlite3.Row
@@ -69,11 +70,11 @@ class ConversationStore:
             GROUP BY s.id
             ORDER BY COALESCE(s.updated_at, s.created_at) DESC, s.id
         """
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             return [dict(row) for row in connection.execute(query, parameters)]
 
     def get_conversation(self, session_id):
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             session = connection.execute(
                 """
                 SELECT id, cwd, repository, host_type, branch, summary, created_at, updated_at
@@ -114,11 +115,11 @@ class ConversationsHandler(BaseHTTPRequestHandler):
         if parsed.path.startswith(prefix):
             session_id = unquote(parsed.path[len(prefix) :])
             if not session_id or "/" in session_id:
-                self._serve_json({"error": "Identificador invalido"}, HTTPStatus.BAD_REQUEST)
+                self._serve_json({"error": "Identificador inválido"}, HTTPStatus.BAD_REQUEST)
                 return
             conversation = self.store.get_conversation(session_id)
             if conversation is None:
-                self._serve_json({"error": "Conversacion no encontrada"}, HTTPStatus.NOT_FOUND)
+                self._serve_json({"error": "Conversación no encontrada"}, HTTPStatus.NOT_FOUND)
                 return
             self._serve_json({"conversation": conversation})
             return
@@ -142,7 +143,15 @@ class ConversationsHandler(BaseHTTPRequestHandler):
             self.send_error(HTTPStatus.NOT_FOUND)
             return
 
-        body = candidate.read_bytes()
+        try:
+            body = candidate.read_bytes()
+        except FileNotFoundError:
+            self.send_error(HTTPStatus.NOT_FOUND)
+            return
+        except OSError as error:
+            self.log_error("No se pudo leer el archivo estático %s: %s", candidate, error)
+            self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR)
+            return
         content_type = mimetypes.guess_type(candidate.name)[0] or "application/octet-stream"
         self.send_response(HTTPStatus.OK)
         self.send_header("Content-Type", f"{content_type}; charset=utf-8")

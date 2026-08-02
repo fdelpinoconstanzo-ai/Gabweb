@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import urlopen
+from unittest.mock import patch
 
 from app import ConversationStore, create_server
 
@@ -47,7 +48,7 @@ class ConversationStoreTest(unittest.TestCase):
                     "owner/new",
                     "cli",
                     "feature",
-                    "Sesion reciente",
+                    "Sesión reciente",
                     "2026-08-02 10:00:00",
                     "2026-08-02 11:00:00",
                 ),
@@ -69,7 +70,7 @@ class ConversationStoreTest(unittest.TestCase):
             VALUES (?, ?, ?, ?, ?)
             """,
             [
-                ("new", 0, "Busca autenticacion", "Revise el login", "2026-08-02 10:01:00"),
+                ("new", 0, "Busca autenticación", "Revisé el login", "2026-08-02 10:01:00"),
                 ("new", 1, "Corrige la prueba", "Prueba corregida", "2026-08-02 10:02:00"),
                 ("old", 0, "Hola", "Hola", "2026-08-01 10:01:00"),
             ],
@@ -87,7 +88,7 @@ class ConversationStoreTest(unittest.TestCase):
         self.assertEqual(2, conversations[0]["turn_count"])
 
     def test_searches_messages_and_treats_wildcards_as_text(self):
-        self.assertEqual("new", self.store.list_conversations("autenticacion")[0]["id"])
+        self.assertEqual("new", self.store.list_conversations("autenticación")[0]["id"])
         self.assertEqual([], self.store.list_conversations("%"))
 
     def test_returns_turns_in_order(self):
@@ -130,6 +131,41 @@ class ConversationsApiTest(ConversationStoreTest):
         with urlopen(f"{self.base_url}/") as response:
             page = response.read().decode("utf-8")
         self.assertIn("Tus conversaciones", page)
+
+    def test_static_read_error_returns_500_without_stopping_server(self):
+        with patch("app.Path.read_bytes", side_effect=PermissionError("sin permiso")):
+            with self.assertRaises(HTTPError) as error:
+                self.get_json("/")
+            self.assertEqual(500, error.exception.code)
+            error.exception.close()
+
+        payload = self.get_json("/api/conversations")
+        self.assertEqual(2, len(payload["conversations"]))
+
+
+class MissingDatabaseApiTest(unittest.TestCase):
+    def setUp(self):
+        self.temporary_directory = tempfile.TemporaryDirectory()
+        self.db_path = Path(self.temporary_directory.name) / "private" / "sessions.db"
+        self.server = create_server("127.0.0.1", 0, self.db_path)
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+        self.url = f"http://127.0.0.1:{self.server.server_port}/api/conversations"
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join()
+        self.temporary_directory.cleanup()
+
+    def test_missing_database_response_does_not_expose_its_path(self):
+        with self.assertRaises(HTTPError) as error:
+            urlopen(self.url)
+        body = json.load(error.exception)
+        self.assertEqual(503, error.exception.code)
+        self.assertEqual("No se encontró la base de datos de Copilot.", body["error"])
+        self.assertNotIn(str(self.db_path), body["error"])
+        error.exception.close()
 
 
 if __name__ == "__main__":
