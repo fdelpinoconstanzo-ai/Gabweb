@@ -1,8 +1,10 @@
-# Gab - Fotógrafo & Director
+# Gabriel Schkolnick — Fotógrafo & Director
+
+**Demo en vivo:** https://fdelpinoconstanzo-ai.github.io/Gabweb/
 
 Portafolio web inspirado en [weareapostrophe.com/photographers](https://weareapostrophe.com/photographers/).
 
-Diseño editorial, minimalista y centrado en la fotografía. Fondo blanco, grid
+Diseño editorial, minimalista y centrado en la fotografía. Fondo claro, grid
 limpio de proyectos, navegación sencilla y filtros por categoría.
 
 ## Características
