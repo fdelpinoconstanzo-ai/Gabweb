@@ -1,0 +1,83 @@
+/* Reset básico para que todos los navegadores partan igual */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #111111;
+    line-height: 1.5;
+    padding: 40px; /* Margen general de la página */
+}
+
+/* === ENCABEZADO Y MENÚ === */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 60px;
+}
+
+.logo h1 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #888888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover, 
+.main-nav a.active {
+    color: #000000;
+}
+
+/* === GRILLA DE FOTOS === */
+.gallery-grid {
+    display: grid;
+    /* Esto hace que las columnas se ajusten solas según el tamaño de la pantalla */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* === MODO CELULAR === */
+@media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .main-nav ul {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
